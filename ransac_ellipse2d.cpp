@@ -182,7 +182,45 @@ namespace sac
 		}
 		return count;
 	}
+		
+	int ransacModelEllipse2D::countWithinDistance(const ModelCoefficient model_coefficients, const double threshold, double& avgError)
+	{
+		avgError = 0;
 
+		double cx = model_coefficients.modelParam[0];
+		double cy = model_coefficients.modelParam[1];
+		double lA = model_coefficients.modelParam[2];
+		double sA = model_coefficients.modelParam[3];
+		double angle = model_coefficients.modelParam[4];
+
+		double cA = sqrt(lA*lA - sA*sA);
+		double f1x = cx - cA*cos(angle*3.141592653 / 180);
+		double f1y = cy - cA*sin(angle*3.141592653 / 180);
+		double f2x = cx + cA*cos(angle*3.141592653 / 180);
+		double f2y = cy + cA*sin(angle*3.141592653 / 180);
+
+		int count(0);
+		Point2D cP(cx, cy), cf1(f1x, f1y), cf2(f2x, f2y);
+		for (size_t i = 0; i < indices_.size(); i++)
+		{
+			Point2D iP = input_[indices_[i]];
+			double fd1 = cf1.calDistance(iP);
+			double fd2 = cf2.calDistance(iP);
+
+			double cerror = abs(fd1 + fd2 - 2 * lA);
+			if (cerror < threshold)
+			{
+				count++;
+				avgError += cerror;
+			}
+		}
+
+		if (count>0)
+			avgError /= count;
+
+		return count;
+	}
+	
 	void ransacModelEllipse2D::selectWithinDistance(const ModelCoefficient model_coefficients, const double threshold, std::vector<int> &inliers)
 	{
 		double cx = model_coefficients.modelParam[0];
@@ -249,14 +287,17 @@ namespace sac
 				++iterations_;
 				continue;
 			}
-
-			n_inliers_count = countWithinDistance(model_coeff, threshold_);
+			
+			double cAvgError = 0;
+			n_inliers_count = countWithinDistance(model_coeff, threshold_, cAvgError);
 			if (n_inliers_count > n_best_inliers_count)
 			{
 				n_best_inliers_count = n_inliers_count;
 				model_ = selection;
 				model_coefficients_ = model_coeff;
 
+				m_dAvgError = cAvgError;
+				
 				//compute the k parameter
 				//TODO
 
