@@ -31,12 +31,16 @@ namespace sac
 		CvMat* V = cvCreateMat(6, 6, CV_64F);
 		cvSVD(&A, D, U, V, CV_SVD_U_T);
 
+		double V05 = cvmGet(V, 0, 5);
+		if (abs(V05) < 0.000001)
+			return false;
+
 		double epA = 1;
-		double epB = cvmGet(V, 1, 5) / cvmGet(V, 0, 5);
-		double epC = cvmGet(V, 2, 5) / cvmGet(V, 0, 5);
-		double epD = cvmGet(V, 3, 5) / cvmGet(V, 0, 5);
-		double epE = cvmGet(V, 4, 5) / cvmGet(V, 0, 5);
-		double epF = cvmGet(V, 5, 5) / cvmGet(V, 0, 5);
+		double epB = cvmGet(V, 1, 5) / V05;
+		double epC = cvmGet(V, 2, 5) / V05;
+		double epD = cvmGet(V, 3, 5) / V05;
+		double epE = cvmGet(V, 4, 5) / V05;
+		double epF = cvmGet(V, 5, 5) / V05;
 
 		cvReleaseMat(&D);
 		cvReleaseMat(&U);
@@ -49,7 +53,8 @@ namespace sac
 		// a,b,c,d,e,f is a ellipse
 		double thres1 = 4 * epA * epC - epB * epB;
 		double ellParam[9] = { 2 * epA, epB, epD, epB, 2 * epC, epE, epD, epE, 2 * epF };
-		double thres2 = sac::matDet(3, ellParam)*(epA + epC);
+		CvMat ellParamMat = cvMat(3, 3, CV_64F, ellParam);		
+		double thres2 = cvDet(&ellParamMat)*(epA + epC);
 
 		if (thres1 <= 0 || thres2 >= 0)
 			return false;
@@ -86,12 +91,16 @@ namespace sac
 		CvMat* V = cvCreateMat(6, 6, CV_64F);
 		cvSVD(&A, D, U, V, CV_SVD_U_T);
 
+		double V05 = cvmGet(V, 0, 5);
+		if (abs(V05) < 0.000001)
+			return false;
+
 		double epA = 1;
-		double epB = cvmGet(V, 1, 5) / cvmGet(V, 0, 5);
-		double epC = cvmGet(V, 2, 5) / cvmGet(V, 0, 5);
-		double epD = cvmGet(V, 3, 5) / cvmGet(V, 0, 5);
-		double epE = cvmGet(V, 4, 5) / cvmGet(V, 0, 5);
-		double epF = cvmGet(V, 5, 5) / cvmGet(V, 0, 5);
+		double epB = cvmGet(V, 1, 5) / V05;
+		double epC = cvmGet(V, 2, 5) / V05;
+		double epD = cvmGet(V, 3, 5) / V05;
+		double epE = cvmGet(V, 4, 5) / V05;
+		double epF = cvmGet(V, 5, 5) / V05;
 
 		cvReleaseMat(&D);
 		cvReleaseMat(&U);
@@ -104,7 +113,8 @@ namespace sac
 		// a,b,c,d,e,f is a ellipse
 		double thres1 = 4 * epA * epC - epB * epB;
 		double ellParam[9] = { 2 * epA, epB, epD, epB, 2 * epC, epE, epD, epE, 2 * epF };
-		double thres2 = sac::matDet(3, ellParam)*(epA + epC);
+		CvMat ellParamMat = cvMat(3, 3, CV_64F, ellParam);		
+		double thres2 = cvDet(&ellParamMat)*(epA + epC);
 
 		if (thres1 <= 0 || thres2 >= 0)
 			return false;
