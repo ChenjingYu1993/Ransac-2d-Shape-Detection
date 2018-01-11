@@ -20,8 +20,8 @@ namespace sac
 
 		ransacModelCircle2D(const PointCloud &cloud, const std::vector<int>&indices, double threshold, int max_iteration)
 			:RansacModel(cloud, indices, threshold, max_iteration){}
-
-		ransacModelCircle2D(){ m_dSpecificRadius = 0; m_dDiffRatio = 0.2; }
+			
+		ransacModelCircle2D(){ m_dSpecificRadius = 0; m_dDiffRatio = 0.2; m_vMultiRadius.resize(0); }
 		~ransacModelCircle2D(){};
 
 		modelType getModelType() const { return MODEL_CIRCLE2D; }
@@ -46,9 +46,21 @@ namespace sac
 		*/
 		inline void setSpecificRadius(double radius, double diffRatio) { m_dSpecificRadius = radius; m_dDiffRatio = diffRatio; }
 		
+		inline void setMultiRadius(std::vector<double> multiRaius, double diffRatio)
+		{
+			m_vMultiRadius.resize(multiRaius.size());
+
+			for (size_t i = 0; i < multiRaius.size(); i++)
+				m_vMultiRadius[i] = multiRaius[i];
+
+			m_dDiffRatio = diffRatio;
+		}
+		
 	private:
 		double m_dSpecificRadius;
 		double m_dDiffRatio;
+		
+		std::vector<double> m_vMultiRadius;
 	};
 
 }
