@@ -69,14 +69,6 @@ namespace sac
 		double spRatio;
 
 	};
-
-	/**
-	* \Brief: calculate determinate of matrix wiht size n*n
-	* @Param[in]: n means the size of matrix, and the matrix is n*n
-	* @Param[in]: mat, double* style, the matrix is represented as a one-dimensional array
-	* \Details: n*n matrix saved as liner array
-	*/
-	double matDet(int n, double* mat);
 }
 
 
