@@ -31,11 +31,25 @@ namespace sac
 		double y = (d*c - a*f) / (b*d - e*a);
 		double r = sqrt((x - p1.x)*(x - p1.x) + (y - p1.y)*(y - p1.y));
 
+
 		// radius of target circle has already been set
 		if (m_dSpecificRadius > 0)
 		{
 			double cDiffRatio = abs(m_dSpecificRadius - r) / m_dSpecificRadius;
-			if (cDiffRatio >= m_dDiffRatio)
+			if (cDiffRatio > m_dDiffRatio)
+				return false;
+		}
+
+		if (m_vMultiRadius.size() != 0)
+		{
+			bool isIn = true;
+			for (size_t i = 0; i < m_vMultiRadius.size(); i++)
+			{
+				double cDiffRatio = abs(m_vMultiRadius[i] - r) / m_vMultiRadius[i];				
+				isIn = isIn && (cDiffRatio > m_dDiffRatio);
+			}
+
+			if (isIn)
 				return false;
 		}
 
