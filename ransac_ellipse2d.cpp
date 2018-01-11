@@ -276,59 +276,6 @@ namespace sac
 		selectWithinDistance(model_coefficients_, threshold_, inliers_);
 		return true;
 	}
-	
-	double matDet(int n, double* mat)
-	{
-		double* mPtr = new double[n*n];
-		memcpy(mPtr, mat, n*n*sizeof(double));
-
-		int ii, jj, k, u;
-		int iter = 0;
-		double det1 = 1, yin;
-
-		for (ii = 0; ii < n; ii++)
-		{
-			if (mat[ii*n + ii] == 0)
-			for (jj = ii; jj < n; jj++)
-			{
-				if (mat[jj*n + ii] != 0)
-				{
-					double* aa = mat + ii*n;
-					double* bb = mat + jj*n;
-					double temp1;
-					for (int i = 0; i < n; i++)
-					{
-						temp1 = aa[i];
-						aa[i] = bb[i];
-						bb[i] = temp1;
-					}
-
-					iter++;
-				}
-			}
-
-			for (k = ii + 1; k < n; k++)
-			{
-				yin = -1 * mat[k*n + ii] / mat[ii*n + ii];
-
-				for (u = 0; u < n; u++)
-				{
-					mat[k*n + u] = mat[k*n + u] + mat[ii*n + u] * yin;
-				}
-			}
-		}
-		for (ii = 0; ii < n; ii++)
-			det1 = det1 * mat[ii*n + ii];
-
-		if (iter % 2 == 1)
-			det1 = -det1;
-
-		memcpy(mat, mPtr, n*n*sizeof(double));
-		free(mPtr);
-
-		return (det1);
-	}
-
 }
 
 #endif
