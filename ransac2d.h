@@ -207,10 +207,6 @@ namespace sac
 					samples[j] = shuffled_indices_[iRand % (shuffled_indices_.size() - 1)];
 				}
 
-				//for (size_t ii = 0; ii < samples.size(); ii++)
-				//	std::cout << samples[ii] << " ";
-				//std::cout << std::endl;
-
 				if (isGoodSample(samples))
 					return;
 			}
