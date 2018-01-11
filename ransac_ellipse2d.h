@@ -15,22 +15,48 @@ namespace sac
 
 		typedef RansacModel::PointCloud PointCloud;
 
-		ransacModelEllipse2D(const PointCloud &cloud, double threshold, int max_iterations)
-			:RansacModel(cloud, threshold, max_iterations){ spLAxis = 0; spSAxis = 0; spAngle = 0; spRatio = 0.2; }
+		ransacModelEllipse2D(const PointCloud &cloud, 
+			double threshold, 
+			int max_iterations)
+			:RansacModel(cloud, threshold, max_iterations)
+		{
+			spLAxis = 0; 
+			spSAxis = 0;
+			spAngle = 0;
+			spRatio = 0.2; 
+			m_dAvgError = -1;
+		}
 
-		ransacModelEllipse2D(const PointCloud &cloud, const std::vector<int> &indices, double threshold, int max_iterations)
-			:RansacModel(cloud, indices, threshold, max_iterations){ spLAxis = 0; spSAxis = 0; spAngle = 0; spRatio = 0.2; }
+		ransacModelEllipse2D(const PointCloud &cloud, 
+			const std::vector<int> &indices,
+			double threshold, 
+			int max_iterations)
+			:RansacModel(cloud, indices, threshold, max_iterations)
+		{
+			spLAxis = 0;
+			spSAxis = 0; 
+			spAngle = 0; 
+			spRatio = 0.2;
+			m_dAvgError = -1;
+		}
 
-		ransacModelEllipse2D(){};
+		ransacModelEllipse2D()
+		{
+			m_dAvgError = -1;
+		};
+
 		~ransacModelEllipse2D(){};
 
 		modelType getModelType()const{ return MODEL_ELLIPSE2D; }
+
+		inline double getAvgError(){ return m_dAvgError; }
 
 		bool isGoodSample(const std::vector<int> &samples) const;
 
 		bool computeModelCoefficients(const std::vector<int> &samples, ModelCoefficient &model_coefficient);
 
 		int countWithinDistance(const ModelCoefficient model_coefficients, const double threshold);
+		int countWithinDistance(const ModelCoefficient model_coefficients, const double threshold, double& avgError);
 
 		void selectWithinDistance(const ModelCoefficient model_coefficients, const double threshold, std::vector<int> &inliers);
 
@@ -68,9 +94,9 @@ namespace sac
 		double spAngle;
 		double spRatio;
 
+		double m_dAvgError;
 	};
 }
-
 
 
 #endif
